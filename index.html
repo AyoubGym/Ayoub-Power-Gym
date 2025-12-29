@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="html-root">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
+    <title>AYOUB POWER | Official Elite</title>  
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Oswald:wght@700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">  
+    <script src="https://unpkg.com/lucide@latest"></script>  
+    <style>  
+        :root { --primary: #f97316; --bg: #050505; --gold: #D4AF37; }  
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg); color: white; transition: all 0.5s ease; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }  
+        
+        .theme-gold { --primary: #D4AF37; }
+        .text-primary-dyn { color: var(--primary); }
+        .bg-primary-dyn { background-color: var(--primary); }
+        .border-primary-dyn { border-color: var(--primary); }
+
+        .oswald { font-family: 'Oswald', sans-serif; }  
+        .orbitron { font-family: 'Orbitron', sans-serif; }  
+        .glass { background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }  
+        
+        .tab-content { display: none; }  
+        .tab-content.active { display: block; animation: slideUp 0.4s ease; }  
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }  
+
+        .vip-card {
+            background: linear-gradient(135deg, #111 0%, #222 100%);
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            z-index: 10;
+        }
+        .theme-gold .vip-card {
+            border: 1px solid var(--gold);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+        }
+
+        input { pointer-events: auto !important; position: relative; z-index: 50 !important; }
+
+        .shimmer-gold {
+            background: linear-gradient(90deg, #b8860b, #f0e68c, #b8860b);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+        
+        .verified-badge { background: #1d9bf0; color: white; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
+        .theme-gold .verified-badge { background: var(--gold); color: black; }
+
+        .nav-item { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    </style>  
+</head>  
+<body class="pb-28">
+
+<div id="login-screen" class="fixed inset-0 z-[10000] bg-black flex flex-col items-center justify-center p-8">  
+    <div class="orbitron text-primary-dyn text-2xl font-bold mb-10 tracking-[0.3em] clock-display">00:00:00</div>  
+    <div class="w-24 h-24 bg-primary-dyn rounded-3xl flex items-center justify-center shadow-2xl mb-8 transform rotate-3">  
+        <i data-lucide="shield-check" class="w-12 h-12 text-black"></i>  
+    </div>  
+    <h1 class="oswald text-4xl font-black italic mb-12 tracking-tighter uppercase">AYOUB <span class="text-primary-dyn">POWER</span></h1>  
+    <div class="w-full max-w-sm space-y-4">  
+        <input id="login-otp" type="password" placeholder="PIN CODE" class="w-full bg-neutral-900 border-2 border-neutral-800 rounded-2xl p-5 text-center text-xl font-bold focus:border-orange-500 outline-none transition-all">  
+        <button onclick="checkLogin()" class="w-full bg-primary-dyn text-black oswald text-xl py-5 rounded-2xl font-black uppercase active:scale-95 transition-transform">Initialize System</button>  
+    </div>  
+</div>  
+
+<div id="main-app" class="hidden">  
+    <header class="sticky top-0 z-[100] glass px-6 py-4 flex justify-between items-center">  
+        <div class="flex flex-col">  
+            <span class="orbitron text-primary-dyn text-lg font-bold leading-none clock-display">00:00:00</span>  
+        </div>  
+        <div class="flex items-center gap-2">  
+            <div id="vip-status-dot" class="w-2 h-2 rounded-full bg-neutral-700"></div>  
+            <h2 class="oswald text-lg italic tracking-tighter uppercase">AYOUB <span class="text-primary-dyn">ELITE</span></h2>  
+        </div>  
+    </header>  
+
+    <main class="p-6 max-w-2xl mx-auto space-y-8">  
+
+        <div id="tab-vip" class="tab-content active space-y-8">
+            <div class="text-center space-y-2">
+                <h2 class="oswald text-3xl font-black italic">مركز التحكم بالنخبة</h2>
+                <p class="text-[10px] text-neutral-500 font-bold uppercase tracking-widest">Elite Access Management</p>
+            </div>
+
+            <div class="vip-card rounded-[2.5rem] p-8 space-y-8 relative shadow-2xl overflow-hidden">
+                <div class="flex justify-between items-start relative z-20">
+                    <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center">
+                        <i data-lucide="crown" class="text-primary-dyn w-6 h-6"></i>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[8px] font-black text-neutral-500 uppercase">Status</p>
+                        <p id="vip-status-text" class="oswald text-lg font-black italic uppercase">Basic Member</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 relative z-20">
+                    <div class="flex items-center gap-4">
+                        <div class="w-2 h-10 bg-primary-dyn rounded-full"></div>
+                        <div>
+                            <h4 id="user-name-card" class="oswald text-xl font-black uppercase tracking-tight">AYOUB POWER</h4>
+                            <p class="text-[9px] text-neutral-500 font-bold">ALPHA-2009-OFFICIAL</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="activation-area" class="space-y-4 pt-4 border-t border-white/5 relative z-30">
+                    <input id="vip-key-input" type="text" placeholder="أدخل كود الـ VIP هنا" 
+                           class="w-full bg-black/60 border border-white/10 rounded-2xl p-4 text-center oswald font-bold text-primary-dyn outline-none focus:border-primary-dyn"
+                           autocomplete="off">
+                    <button onclick="activateVip()" class="w-full bg-primary-dyn text-black py-4 rounded-2xl font-black oswald uppercase shadow-lg hover:brightness-110 active:scale-95 transition-all">Unlock Elite Power</button>
+                </div>
+
+                <!-- لتغيير نص الزر، قم بتعديل النص بين وسمي <a> بالأسفل -->
+                <div id="gold-plan-area" class="hidden pt-4 border-t border-white/10 relative z-30">
+                     <a id="plan-button-link" href="https://drive.google.com/file/d/1vXALKuvGLwh46Pvr-I-AiDiAcEIuTwmF/view?usp=drivesdk" target="_blank" class="block w-full bg-primary-dyn text-black py-4 rounded-2xl text-center font-black oswald italic shadow-xl animate-bounce">
+                        🚀 اضغط هنا لتحميل الخطة الذهبية
+                     </a>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                <h3 class="oswald text-sm font-black italic text-neutral-500">الميزات النشطة</h3>
+                <div class="bg-neutral-900/50 p-5 rounded-3xl border border-white/5 flex items-center gap-4">
+                    <div class="w-10 h-10 bg-orange-500/10 rounded-xl flex items-center justify-center text-orange-500"><i data-lucide="zap" class="w-5 h-5"></i></div>
+                    <div class="flex-1">
+                        <h4 class="text-xs font-black uppercase">المختبر الحيوي</h4>
+                        <p class="text-[9px] text-neutral-500 italic">فتح حاسبة الكتلة والبروتين.</p>
+                    </div>
+                    <div id="feat-lock-1" class="text-neutral-700"><i data-lucide="lock" class="w-4 h-4"></i></div>
+                </div>
+                <div class="bg-neutral-900/50 p-5 rounded-3xl border border-white/5 flex items-center gap-4">
+                    <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500"><i data-lucide="bot" class="w-5 h-5"></i></div>
+                    <div class="flex-1">
+                        <h4 class="text-xs font-black uppercase">المدرب الذكي</h4>
+                        <p class="text-[9px] text-neutral-500 italic">دردشة غير محدودة مع AI.</p>
+                    </div>
+                    <div id="feat-lock-2" class="text-neutral-700"><i data-lucide="lock" class="w-4 h-4"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-lab" class="tab-content space-y-6">
+            <h2 class="oswald text-2xl font-black italic">المختبر الحيوي</h2>
+            <div id="lab-locked-overlay" class="bg-neutral-900 p-10 rounded-[2.5rem] border border-white/5 text-center space-y-4">
+                <i data-lucide="lock" class="w-12 h-12 mx-auto text-neutral-700"></i>
+                <p class="text-xs font-black text-neutral-500 italic uppercase">VIP Activation Required</p>
+                <button onclick="nav('vip')" class="bg-primary-dyn text-black px-6 py-2 rounded-xl font-black text-[10px] uppercase">Activate Now</button>
+            </div>
+            <div id="lab-content" class="hidden space-y-6">
+                <div class="bg-neutral-900 p-6 rounded-3xl border border-white/5 grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-[9px] font-black text-neutral-500 uppercase">الوزن (KG)</label>
+                        <input type="number" id="inp-w" class="w-full bg-black border border-white/10 rounded-xl p-4 text-center font-bold text-xl outline-none focus:border-primary-dyn">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[9px] font-black text-neutral-500 uppercase">الطول (CM)</label>
+                        <input type="number" id="inp-h" class="w-full bg-black border border-white/10 rounded-xl p-4 text-center font-bold text-xl outline-none focus:border-primary-dyn">
+                    </div>
+                    <button onclick="processStats()" class="col-span-2 bg-primary-dyn text-black py-4 rounded-2xl font-black uppercase">معالجة البيانات</button>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-neutral-900 p-6 rounded-3xl border border-white/5 text-center">
+                        <p class="text-[10px] font-black text-neutral-500 uppercase">BMI</p>
+                        <h4 id="res-bmi-val" class="text-3xl font-black text-primary-dyn oswald">--</h4>
+                    </div>
+                    <div class="bg-neutral-900 p-6 rounded-3xl border border-white/5 text-center">
+                        <p class="text-[10px] font-black text-neutral-500 uppercase">البروتين</p>
+                        <h4 id="res-prot-val" class="text-3xl font-black text-primary-dyn oswald">--</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-workouts" class="tab-content space-y-6">
+            <div class="flex justify-between items-center border-b-2 border-primary-dyn pb-2">
+                <h2 class="oswald text-2xl font-black italic">قاعدة التمارين</h2>
+                <i data-lucide="dumbbell" class="text-primary-dyn"></i>
+            </div>
+            <div id="workout-list" class="space-y-6"></div>
+        </div>
+
+        <div id="tab-ai" class="tab-content h-[calc(100vh-280px)] flex flex-col space-y-4">
+            <div id="ai-locked-msg" class="flex-1 bg-neutral-900 rounded-[2.5rem] flex flex-col items-center justify-center p-8 text-center space-y-6">
+                 <i data-lucide="bot-off" class="w-12 h-12 text-neutral-700"></i>
+                 <h3 class="oswald text-xl font-black italic uppercase">AI Commander Locked</h3>
+                 <button onclick="nav('vip')" class="bg-primary-dyn text-black px-8 py-4 rounded-2xl font-black oswald uppercase">Upgrade to Elite</button>
+            </div>
+            <div id="ai-content" class="hidden flex-1 bg-neutral-900 rounded-[2.5rem] border border-white/5 flex flex-col overflow-hidden relative">
+                <div class="p-4 border-b border-white/5 flex items-center gap-3 bg-white/5">
+                    <i data-lucide="bot" class="text-primary-dyn"></i>
+                    <h3 class="oswald text-sm font-black italic">AYOUB AI ASSISTANT</h3>
+                </div>
+                <div id="ai-messages" class="flex-1 overflow-y-auto p-4 space-y-4 text-[11px] font-bold"></div>
+                <div class="p-4 bg-black/50 border-t border-white/5 flex gap-2">
+                    <input id="ai-input" class="flex-1 bg-neutral-800 rounded-xl px-4 outline-none text-xs" placeholder="تحدث مع المدرب أيوب...">
+                    <button onclick="askAyoub()" class="w-12 h-12 bg-primary-dyn text-black rounded-xl flex items-center justify-center active:scale-90 transition-transform"><i data-lucide="send" class="w-5 h-5"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-profile" class="tab-content space-y-8 text-center">
+            <div class="relative w-32 h-32 mx-auto pt-6">
+                <img id="pfp" src="https://api.dicebear.com/7.x/pixel-art/svg?seed=Ayoub" class="w-full h-full rounded-full border-4 border-primary-dyn p-1 shadow-2xl">
+                <div class="absolute bottom-0 right-0 verified-badge w-8 h-8 border-4 border-black"><i data-lucide="check" class="w-4 h-4"></i></div>
+            </div>
+            
+            <div class="space-y-1">
+                <h2 id="user-display-name" class="oswald text-3xl font-black italic flex items-center justify-center gap-2 uppercase tracking-tighter">AYOUB POWER</h2>
+                <p class="text-[9px] font-black text-neutral-500 tracking-widest uppercase">Official Athlete & Founder</p>
+            </div>
+
+            <div class="flex justify-center gap-4">
+                <a href="https://www.tiktok.com/@ayouub._.officiel" target="_blank" class="p-5 bg-neutral-900 rounded-3xl border border-white/5 hover:bg-neutral-800 transition-colors">
+                    <i data-lucide="video" class="text-white w-6 h-6"></i>
+                </a>
+                <a href="https://www.instagram.com/xo._ayoub_.xo?igsh=MW56MWllZm96ZTI5aA==" target="_blank" class="p-5 bg-neutral-900 rounded-3xl border border-white/5 hover:bg-neutral-800 transition-colors">
+                    <i data-lucide="instagram" class="text-pink-500 w-6 h-6"></i>
+                </a>
+            </div>
+
+            <div class="bg-neutral-900 p-8 rounded-[2.5rem] border border-white/5 space-y-6">
+                <div class="space-y-2">
+                    <p class="text-[8px] font-black text-neutral-500 text-right uppercase">تعديل الاسم المستعار</p>
+                    <input type="text" placeholder="أدخل اسمك الجديد" class="w-full bg-black border border-white/10 rounded-2xl p-4 text-center font-bold outline-none focus:border-primary-dyn" oninput="updateName(this.value)">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <button onclick="document.getElementById('p-file').click()" class="text-[10px] font-black uppercase text-primary-dyn bg-primary-dyn/5 py-4 rounded-xl border border-primary-dyn/20">تحديث صورة البروفايل</button>
+                    <input type="file" id="p-file" class="hidden" onchange="updatePhoto(this)">
+                </div>
+            </div>
+            
+            <p class="text-[8px] text-neutral-700 font-bold uppercase tracking-[0.4em] pt-4">Ayoub Power © 2025 • Elite System</p>
+        </div>
+
+    </main>
+
+    <nav class="fixed bottom-6 left-6 right-6 z-[1000] glass rounded-[2.5rem] p-3 flex justify-around items-center border border-white/10 shadow-2xl">
+        <button onclick="nav('vip')" class="nav-item p-4 rounded-2xl text-primary-dyn bg-orange-500/10"><i data-lucide="crown"></i></button>
+        <button onclick="nav('lab')" class="nav-item p-4 rounded-2xl text-neutral-500"><i data-lucide="calculator"></i></button>
+        <button onclick="nav('workouts')" class="nav-item p-4 rounded-2xl text-neutral-500"><i data-lucide="dumbbell"></i></button>
+        <button onclick="nav('ai')" class="nav-item p-4 rounded-2xl text-neutral-500"><i data-lucide="bot"></i></button>
+        <button onclick="nav('profile')" class="nav-item p-4 rounded-2xl text-neutral-500"><i data-lucide="user"></i></button>
+    </nav>
+</div>
+
+<script>
+    const APP_PIN = "20090125";
+    const VIP_KEY = "ayouub._.officiel";
+    let isVip = false;
+
+    const workoutData = [
+        { g: "عضلات الصدر (Chest)", l: ["بنش برس مستوي بالبار", "تفتيح دمبلز عالي", "ضغط دمبلز مائل", "متوازي بوزن الجسم", "تفتيح بالكيبل"] },
+        { g: "عضلات الظهر (Back)", l: ["سحب عالي واسع", "رفعة ميتة (Deadlift)", "سحب أرضي ضيق", "سحب دمبل فردي", "عقلة قبضة معكوسة"] },
+        { g: "عضلات الأكتاف (Shoulders)", l: ["ضغط أرنولد", "رفرفة جانبية", "رفرفة أمامية", "ضغط بار خلفي", "ترابيس دمبلز"] },
+        { g: "عضلات الأرجل (Legs)", l: ["سكوات بار", "دفع أرجل جهاز", "فرد أرجل جهاز", "ثني أرجل خلفي", "سمانة واقف"] },
+        { g: "عضلات الأذرع (Arms)", l: ["باي تبادل دمبلز", "هامر كيرل", "تراي سحب كيبل لأسفل", "تراي بار فرنسي", "باي ارتكاز"] }
+    ];
+
+    window.onload = () => {
+        lucide.createIcons();
+        renderWorkouts();
+        setInterval(() => {
+            const time = new Date().toTimeString().split(' ')[0];
+            document.querySelectorAll('.clock-display').forEach(c => c.innerText = time);
+        }, 1000);
+    };
+
+    function checkLogin() {
+        if(document.getElementById('login-otp').value === APP_PIN) {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+        } else { alert("رمز الدخول غير صحيح"); }
+    }
+
+    function activateVip() {
+        const input = document.getElementById('vip-key-input');
+        if(input.value.trim() === VIP_KEY) {
+            isVip = true;
+            document.body.classList.add('theme-gold');
+            document.getElementById('vip-status-dot').style.backgroundColor = "#D4AF37";
+            document.getElementById('vip-status-text').innerText = "ELITE MEMBER";
+            document.getElementById('vip-status-text').classList.add('shimmer-gold');
+            document.getElementById('activation-area').style.display = 'none';
+            document.getElementById('gold-plan-area').classList.remove('hidden');
+            
+            document.getElementById('lab-locked-overlay').classList.add('hidden');
+            document.getElementById('lab-content').classList.remove('hidden');
+            document.getElementById('ai-locked-msg').classList.add('hidden');
+            document.getElementById('ai-content').classList.remove('hidden');
+            
+            [1,2].forEach(id => {
+                const el = document.getElementById('feat-lock-'+id);
+                if(el) el.innerHTML = '<i data-lucide="check-circle" class="text-[#D4AF37]"></i>';
+            });
+            
+            lucide.createIcons();
+            alert("تم تفعيل نظام النخبة لـ أيوب بنجاح! 👑");
+        } else {
+            alert("الكود خاطئ");
+        }
+    }
+
+    function nav(id) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.getElementById('tab-'+id).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(b => {
+            b.classList.remove('text-primary-dyn', 'bg-orange-500/10');
+            b.classList.add('text-neutral-500');
+        });
+        const activeNav = Array.from(document.querySelectorAll('.nav-item')).find(n => n.onclick.toString().includes(id));
+        if(activeNav) {
+            activeNav.classList.add('text-primary-dyn', 'bg-orange-500/10');
+            activeNav.classList.remove('text-neutral-500');
+        }
+        lucide.createIcons();
+    }
+
+    function renderWorkouts() {
+        const box = document.getElementById('workout-list');
+        box.innerHTML = workoutData.map(g => `
+            <div class="space-y-4">
+                <h3 class="oswald text-[11px] border-r-4 border-primary-dyn pr-3 uppercase font-black text-neutral-400 tracking-widest">${g.g}</h3>
+                <div class="grid grid-cols-1 gap-2">
+                    ${g.l.map(ex => `<div class="bg-neutral-900/80 p-5 rounded-3xl border border-white/5 text-[10px] font-black uppercase tracking-tighter flex justify-between items-center">${ex} <i data-lucide="chevron-left" class="w-3 h-3 text-primary-dyn"></i></div>`).join('')}
+                </div>
+            </div>
+        `).join('');
+        lucide.createIcons();
+    }
+
+    function processStats() {
+        const w = parseFloat(document.getElementById('inp-w').value);
+        const h = parseFloat(document.getElementById('inp-h').value);
+        if(!w || !h) return;
+        document.getElementById('res-bmi-val').innerText = (w / ((h/100)**2)).toFixed(1);
+        document.getElementById('res-prot-val').innerText = Math.round(w * 2.2) + "G";
+    }
+
+    async function askAyoub() {
+        const inp = document.getElementById('ai-input');
+        const box = document.getElementById('ai-messages');
+        if(!inp.value.trim()) return;
+        const txt = inp.value; inp.value = "";
+        box.innerHTML += `<div class="flex justify-end"><div class="bg-primary-dyn text-black p-4 rounded-3xl rounded-tr-none max-w-[80%] shadow-lg">${txt}</div></div>`;
+        box.scrollTop = box.scrollHeight;
+        
+        try {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: `أنت المدرب أيوب، بطل رياضي وصاحب هذا التطبيق، أجب باختصار وقوة وحماس بالعربية على: ${txt}` }] }] })
+            });
+            const data = await res.json();
+            const reply = data.candidates[0].content.parts[0].text;
+            box.innerHTML += `<div class="flex justify-start"><div class="bg-neutral-800 p-4 rounded-3xl rounded-tl-none border border-white/5 max-w-[80%]">${reply}</div></div>`;
+        } catch(e) { box.innerHTML += `<div class="text-red-500 p-2 text-center">خطأ في الاتصال</div>`; }
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function updateName(v) {
+        document.getElementById('user-display-name').innerText = v || "AYOUB POWER";
+        document.getElementById('user-name-card').innerText = v || "AYOUB POWER";
+    }
+
+    function updatePhoto(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = e => document.getElementById('pfp').src = e.target.result;
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+</body>  
+</html>
+
